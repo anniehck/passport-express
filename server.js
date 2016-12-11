@@ -3,9 +3,6 @@ const path = require('path');
 const logger = require('morgan');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-const mongoose = require('mongoose');
-
-const routes = require('./routes/index');
 const port = process.env.PORT || 3000;
 
 const passport = require('passport');
@@ -13,8 +10,9 @@ const LocalStrategy = require('passport-local').Strategy;
 const session = require('express-session');
 const flash = require('connect-flash');
 
-// const db = require('./db.js');
-// mongoose.connect(db.url);
+const db = require('./db');
+const mongoose = require('mongoose');
+mongoose.connect(db.url);
 
 const app = express();
 
@@ -25,14 +23,25 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-
-
-app.use(session({ secret: 'shhsecret' }));
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Passport config
+app.use(session({
+  secret: 'shhsecret',
+  resave: true,
+  saveUninitialized: true
+ }));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
+
+const routes = require('./routes/index')(passport);
 app.use('/', routes);
+
+const initPassport = require('./passport/init');
+initPassport(passport);
+
+
 
 app.use((req, res, next) => {
   let err = new Error('Not Found');
