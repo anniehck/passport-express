@@ -1,0 +1,27 @@
+<% include partials/head %>
+  <body>
+    <div class="container">
+      <h2>Log in</h2>
+      <% if (message != null) { %>
+        <div class="flash"><%= message %></div>
+      <% } %>
+
+      <form action="/login" method="post" class="col s8 offset-2" id="login_form">
+        <div class="row">
+          <input type="text" name="username">
+          <label>Username</label>
+        </div>
+        <div class="row">
+          <input type="text" name="password">
+          <label>Password</label>
+        </div>
+        <div class="row">
+          <input type="submit" value="Log me in!">
+        </div>
+      </form>
+
+      <p>Don't have an account yet? Register <a href="/signup">here!</a><br/>
+      Or go back <a href="/">home</a>.</p>
+    </div>
+  </body>
+</html>
