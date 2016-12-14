@@ -1,0 +1,15 @@
+<% include partials/head %>
+  <body>
+    <div class="container">
+      <h2>Welcome <%= user.name %>!</h2>
+
+      <p>
+        Your info:<br />
+        <%= user.email%><br />
+        <%= user.username %><br />
+      </p>
+
+      <p><a href="/logout">Log out</a></p>
+    </div>
+  </body>
+</html>

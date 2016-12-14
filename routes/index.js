@@ -1,32 +1,55 @@
 const express = require('express');
 const passport = require('passport');
-let router = express.Router();
+const router = express.Router();
 
-router.get('/', (req, res, next) => {
-  res.render('index', { title: 'Expressions' });
-});
+let isAuthenticated = (req, res, next) => {
+  if (req.isAuthenticated()) {
+    return next();
+  } else {
+    res.redirect('/');
+  }
+}
 
-router.get('/login', (req, res, next) => {
-  res.render('login.ejs', { message: req.flash('loginMessage') });
-});
+module.exports = (passport) => {
+  router.get('/', (req, res, next) => {
+    res.render('index', { title: 'Expressions' });
+  });
 
-router.get('/signup', (req, res) => {
-  res.render('signup.ejs', { message: req.flash('loginMessage') });
-});
+  router.get('/login', (req, res, next) => {
+    res.render('login', { message: req.flash('loginMessage') });
+  });
 
-router.get('/profile', isLoggedIn, (req, res) => {
-  res.render('profile.ejs', { user: req.user });
-});
+  router.post('/login', passport.authenticate('local-login', {
+    successRedirect: '/home',
+    successFlash: 'Nice to see you again!',
+    failureRedirect: '/login',
+    failureFlash: true
+  }));
 
-router.get('/logout', (req, res) => {
-  req.logout();
-  res.redirect('/');
-});
+  router.get('/signup', (req, res) => {
+    res.render('signup', { message: req.flash('loginMessage') });
+  });
 
-module.exports = router;
+  router.post('/signup', passport.authenticate('local-signup', {
+    successRedirect: '/home',
+    successFlash: 'Thanks for registering with us!',
+    failureRedirect: '/signup',
+    failureFlash: true
+  }));
 
-function isLoggedIn(req, res, next) {
-  if (req.isAuthenticated())
-      return next();
-  res.redirect('/');
+  router.get('/profile', isAuthenticated, (req, res) => {
+    res.render('profile.ejs', { user: req.user });
+  });
+
+  router.get('/logout', (req, res) => {
+    req.logout();
+    res.redirect('/');
+  });
+
+  router.get('/home', isAuthenticated, (req, res) => {
+    res.render('home', { user: req.user });
+  })
+
+  return router;
+
 }
