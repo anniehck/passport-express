@@ -20,7 +20,8 @@ module.exports = (passport) => {
   });
 
   router.post('/login', passport.authenticate('local-login', {
-    successRedirect: '/',
+    successRedirect: '/home',
+    successFlash: 'Nice to see you again!',
     failureRedirect: '/login',
     failureFlash: true
   }));
@@ -30,7 +31,8 @@ module.exports = (passport) => {
   });
 
   router.post('/signup', passport.authenticate('local-signup', {
-    successRedirect: '/',
+    successRedirect: '/home',
+    successFlash: 'Thanks for registering with us!',
     failureRedirect: '/signup',
     failureFlash: true
   }));
@@ -43,6 +45,10 @@ module.exports = (passport) => {
     req.logout();
     res.redirect('/');
   });
+
+  router.get('/home', isAuthenticated, (req, res) => {
+    res.render('home', { user: req.user });
+  })
 
   return router;
 

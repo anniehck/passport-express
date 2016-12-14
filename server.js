@@ -45,7 +45,7 @@ initPassport(passport);
 
 app.use((req, res, next) => {
   let err = new Error('Not Found');
-  err.status = 400;
+  err.status = 404;
   next(err);
 });
 
