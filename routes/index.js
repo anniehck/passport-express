@@ -19,7 +19,7 @@ module.exports = (passport) => {
     res.render('login', { message: req.flash('loginMessage') });
   });
 
-  router.post('/login', passport.authenticate('login', {
+  router.post('/login', passport.authenticate('local-login', {
     successRedirect: '/',
     failureRedirect: '/login',
     failureFlash: true
@@ -29,7 +29,7 @@ module.exports = (passport) => {
     res.render('signup', { message: req.flash('loginMessage') });
   });
 
-  router.post('/signup', passport.authenticate('signup', {
+  router.post('/signup', passport.authenticate('local-signup', {
     successRedirect: '/',
     failureRedirect: '/signup',
     failureFlash: true
