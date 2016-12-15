@@ -11,6 +11,14 @@ let isAuthenticated = (req, res, next) => {
   }
 }
 
+let isAdmin = (req, res, next) => {
+  if (req.user.role == "Admin") {
+    return next();
+  } else {
+    res.redirect('/');
+  }
+}
+
 module.exports = (passport) => {
   router.get('/', (req, res, next) => {
     res.render('index', { title: 'Expressions' });
@@ -40,6 +48,10 @@ module.exports = (passport) => {
 
   router.get('/profile', isAuthenticated, (req, res) => {
     res.render('profile.ejs', { user: req.user });
+  });
+
+  router.get('/admin', isAdmin, (req, res) => {
+    res.render('admin.ejs', { user: req.user });
   });
 
   router.get('/logout', (req, res) => {
